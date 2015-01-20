@@ -1,0 +1,12 @@
+Experimental integration of CEF qith QT5.
+
+Demo:
+
+https://www.youtube.com/watch?v=_Az-F9H42UA
+
+To build you have to edit the qgtkbridge.pro file
+and edit the correct include paths.
+
+This is an experimental code, no guarantees. 
+
+Contributions and comments are welcome.

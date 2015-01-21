@@ -17,8 +17,6 @@ namespace cef {
 
 QtCefWidget::QtCefWidget() {
 	mGtkWdgt = gtk_window_new (GTK_WINDOW_POPUP);
-	GdkColor red = {0, 0xffff, 0x0000, 0x0000};
-    gtk_widget_modify_bg(mGtkWdgt, GTK_STATE_NORMAL, &red);
 	gtk_widget_show(mGtkWdgt);
 	GdkWindow *gdkWin = gtk_widget_get_window(mGtkWdgt);
 	QWindow *qWin = QWindow::fromWinId(GDK_DRAWABLE_XID(gdkWin));

@@ -20,3 +20,7 @@ HEADERS  += mainwindow.h
 FORMS    += mainwindow.ui
 
 QMAKE_CXXFLAGS += -std=c++0x -pthread  -g -DQT_NO_KEYWORDS
+LIBS +=  -L/home/gustavo/cef/Release\
+         -lcef /home/gustavo/cef/out/Release/obj.target/libcef_dll_wrapper.a -ludev
+
+INCLUDEPATH += /home/gustavo/cef/

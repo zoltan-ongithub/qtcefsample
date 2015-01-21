@@ -2,6 +2,7 @@
 #include <QApplication>
 #include <QPushButton>
 #include <QLayout>
+#include <QDebug>
 #include <QWidget>
 #include <stdio.h>
 #include "QtCefWidget.h"
@@ -16,65 +17,71 @@ int g_argc;
 char **g_argv;
 
 class SimpleHandler : public CefClient,
-                      public CefDisplayHandler,
-                      public CefLifeSpanHandler,
-                      public CefLoadHandler {
- public:
+    public CefDisplayHandler,
+    public CefLifeSpanHandler,
+    public CefLoadHandler
+{
+public:
     SimpleHandler() {
 
     }
-    ~SimpleHandler(){}
+    ~SimpleHandler() {}
     IMPLEMENT_REFCOUNTING(SimpleHandler);
 };
 
 class SimpleApp : public CefApp,
-                  public CefBrowserProcessHandler {
- public:
-  SimpleApp(): mWidget(0) {};
-  // CefApp methods:
-  virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
-      OVERRIDE { return this; }
-  // CefBrowserProcessHandler methods:
-  virtual void OnContextInitialized() {
+    public CefBrowserProcessHandler
+{
+public:
+    SimpleApp(): mWidget(0) {};
+    // CefApp methods:
+    virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
+    OVERRIDE { return this; }
+    // CefBrowserProcessHandler methods:
+    virtual void OnContextInitialized() {
 
-    printf("Context initialized\n");
+        printf("Context initialized\n");
 
-    CefWindowInfo window_info;
-    if( mWidget != 0) {
-        CefRect r;
-        r.width = 400;
-        r.height = 400;
-        r.x = 0;
-        r.y = 0;
-    	window_info.SetAsChild(mWidget, r);
-    	
-    	printf("setting mWidget as child\n");
-    }
-    CefRefPtr<SimpleHandler> handler(new SimpleHandler());
+        CefWindowInfo window_info;
+        if( mWidget != 0) {
+            CefRect r;
+            r.width = 400;
+            r.height = 400;
+            r.x = 0;
+            r.y = 0;
+            qDebug() << mWidget;
+            window_info.SetAsChild(mWidget, r);
 
-    // Specify CEF browser settings here.
-     CefBrowserSettings browser_settings;
+            printf("setting mWidget as child\n");
+        }
+        CefRefPtr<SimpleHandler> handler(new SimpleHandler());
 
-    std::string url;
+        // Specify CEF browser settings here.
+        CefBrowserSettings browser_settings;
 
-    CefRefPtr<CefCommandLine> command_line =
-          CefCommandLine::GetGlobalCommandLine();
-    url = command_line->GetSwitchValue("url");
-    if (url.empty())
-        url = "http://www.google.com";
+        std::string url;
+
+        CefRefPtr<CefCommandLine> command_line =
+            CefCommandLine::GetGlobalCommandLine();
+        url = command_line->GetSwitchValue("url");
+        if (url.empty())
+            url = "http://www.google.com";
         CefBrowserHost::CreateBrowser(window_info, handler.get(), url,
-                                browser_settings, NULL);
+                                      browser_settings, NULL);
     }
- void setGtkWidget(WId w) { mWidget = w;}
+    void setGtkWidget(WId w) {
+        mWidget = w;
+    }
 
- private:
-  WId mWidget;
-  // Include the default reference counting implementation.
-  IMPLEMENT_REFCOUNTING(SimpleApp);
+private:
+    WId mWidget;
+    // Include the default reference counting implementation.
+    IMPLEMENT_REFCOUNTING(SimpleApp);
 };
 
 
-void browser_thread() {
+void browser_thread()
+{
 
 }
 
@@ -85,46 +92,47 @@ int main(int argc, char *argv[])
 
 
 
-	  CefSettings settings;
-	  CefMainArgs main_args(g_argc, g_argv);
+    CefSettings settings;
+    CefMainArgs main_args(g_argc, g_argv);
 
-	  CefRefPtr<SimpleApp> app(new SimpleApp());
+    CefRefPtr<SimpleApp> app(new SimpleApp());
 
-	  // CEF applications have multiple sub-processes (render, plugin, GPU, etc)
-	  // that share the same executable. This function checks the command-line and,
-	  // if this is a sub-process, executes the appropriate logic.
-	  int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
-	  if (exit_code >= 0) {
-	    // The sub-process has completed so return here.
-		  printf("Failed to run CefExecuteProcess\n");
-	  }
+    // CEF applications have multiple sub-processes (render, plugin, GPU, etc)
+    // that share the same executable. This function checks the command-line and,
+    // if this is a sub-process, executes the appropriate logic.
+    int exit_code = CefExecuteProcess(main_args, app.get(), NULL);
+    if (exit_code >= 0) {
+        // The sub-process has completed so return here.
+        printf("Failed to run CefExecuteProcess\n");
+        return exit_code;
+    }
 
-      QApplication a(argc, argv);
+    QApplication a(argc, argv);
 
-  	  QtCefWidget *cefWidget = QtCefWidget::newGtkBasedWidget();
-  	  app->setGtkWidget(cefWidget->winId());
+    QtCefWidget *cefWidget = QtCefWidget::newGtkBasedWidget();
+    app->setGtkWidget(cefWidget->winId());
 
-	  CefString(&settings.locales_dir_path)="/home/kuscsik/cef/chromium/src/out/Debug/locales";
-	  CefString(&settings.resources_dir_path) ="/home/kuscsik/cef/chromium/src/out/Debug/";
-	  printf("Initialize CEF\n");
-	  // Initialize CEF for the browser process.
-	  CefInitialize(main_args, settings, app.get(), NULL);
+    CefString(&settings.locales_dir_path)="/home/gustavo/cef/Resources/locales";
+    CefString(&settings.resources_dir_path) ="/home/gustavo/cef/Resources/";
+    printf("Initialize CEF\n");
+    // Initialize CEF for the browser process.
+    CefInitialize(main_args, settings, app.get(), NULL);
 
-	  // Shut down CEF.
-
-
-  	 MainWindow w;
+    // Shut down CEF.
 
 
-    QWidget *browserWidget = w.findChild<QWidget*>("browserWidget");
+    MainWindow w;
+
+
+    QWidget *browserWidget = w.findChild<QWidget *>("browserWidget");
     QVBoxLayout *browserLayout = new QVBoxLayout(browserWidget);
     browserLayout->addWidget( cefWidget);
     //printf("Browser widget 0x%x\n", (long int) browserWidget->logicalDpiX());
     //browserWidget->layout()->addWidget(button1);
-   // w.layout()->addWidget(qw);
+    // w.layout()->addWidget(qw);
     //w.layout()->addWidget(button1);
     w.show();
-    std::thread bthread([&]{ a.exec(); });
- 	CefRunMessageLoop();
- 	return 0;
+    std::thread bthread([&] { a.exec(); });
+    CefRunMessageLoop();
+    return 0;
 }

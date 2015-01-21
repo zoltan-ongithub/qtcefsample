@@ -11,17 +11,19 @@
 #include <QWidget>
 #include <QWindow>
 
-namespace cef {
-class QtCefWidget : public QWidget{
+namespace cef
+{
+class QtCefWidget : public QWidget
+{
 
-	QWidget* mQWidget;
-	QWindow* mQwindow;
+    QWidget *mQWidget;
+    QWindow *mQwindow;
 public:
-	static QtCefWidget* newGtkBasedWidget();
+    static QtCefWidget *newGtkBasedWidget();
 
-	~QtCefWidget();
+    ~QtCefWidget();
 private:
-	QtCefWidget();
+    QtCefWidget();
 };
 }
 

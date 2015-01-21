@@ -10,18 +10,15 @@
 
 #include <QWidget>
 #include <QWindow>
-#include <gtk/gtk.h>
 
 namespace cef {
 class QtCefWidget : public QWidget{
-	GtkWidget *mGtkWdgt;
+
 	QWidget* mQWidget;
 	QWindow* mQwindow;
 public:
 	static QtCefWidget* newGtkBasedWidget();
-	void show();
-	QWidget* getQWidget() { return mQWidget;}
-	GtkWidget* getGtkWidget() { return mGtkWdgt; }
+
 	~QtCefWidget();
 private:
 	QtCefWidget();

@@ -3,8 +3,6 @@
 #include <QPushButton>
 #include <QLayout>
 #include <QWidget>
-#include <gtk/gtk.h>
-#include <gdk/gdkx.h>
 #include <stdio.h>
 #include "QtCefWidget.h"
 #include <thread>
@@ -32,7 +30,7 @@ class SimpleHandler : public CefClient,
 class SimpleApp : public CefApp,
                   public CefBrowserProcessHandler {
  public:
-  SimpleApp() : mWidget(nullptr) {};
+  SimpleApp(): mWidget(0) {};
   // CefApp methods:
   virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
       OVERRIDE { return this; }
@@ -42,8 +40,14 @@ class SimpleApp : public CefApp,
     printf("Context initialized\n");
 
     CefWindowInfo window_info;
-    if( mWidget != nullptr) {
-    	window_info.SetAsChild(mWidget);
+    if( mWidget != 0) {
+        CefRect r;
+        r.width = 400;
+        r.height = 400;
+        r.x = 0;
+        r.y = 0;
+    	window_info.SetAsChild(mWidget, r);
+    	
     	printf("setting mWidget as child\n");
     }
     CefRefPtr<SimpleHandler> handler(new SimpleHandler());
@@ -61,10 +65,10 @@ class SimpleApp : public CefApp,
         CefBrowserHost::CreateBrowser(window_info, handler.get(), url,
                                 browser_settings, NULL);
     }
- void setGtkWidget(GtkWidget* w) { mWidget = w;}
+ void setGtkWidget(WId w) { mWidget = w;}
 
  private:
-  GtkWidget* mWidget;
+  WId mWidget;
   // Include the default reference counting implementation.
   IMPLEMENT_REFCOUNTING(SimpleApp);
 };
@@ -83,8 +87,7 @@ int main(int argc, char *argv[])
 
 	  CefSettings settings;
 	  CefMainArgs main_args(g_argc, g_argv);
-	  //GtkWidget* gWidget = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	  //gtk_widget_show(gWidget);
+
 	  CefRefPtr<SimpleApp> app(new SimpleApp());
 
 	  // CEF applications have multiple sub-processes (render, plugin, GPU, etc)
@@ -95,13 +98,11 @@ int main(int argc, char *argv[])
 	    // The sub-process has completed so return here.
 		  printf("Failed to run CefExecuteProcess\n");
 	  }
-	  printf("Initializing gtk\n");
 
-      gtk_init(&argc, &argv);
       QApplication a(argc, argv);
 
   	  QtCefWidget *cefWidget = QtCefWidget::newGtkBasedWidget();
-  	  app->setGtkWidget(cefWidget->getGtkWidget());
+  	  app->setGtkWidget(cefWidget->winId());
 
 	  CefString(&settings.locales_dir_path)="/home/kuscsik/cef/chromium/src/out/Debug/locales";
 	  CefString(&settings.resources_dir_path) ="/home/kuscsik/cef/chromium/src/out/Debug/";
@@ -117,7 +118,7 @@ int main(int argc, char *argv[])
 
     QWidget *browserWidget = w.findChild<QWidget*>("browserWidget");
     QVBoxLayout *browserLayout = new QVBoxLayout(browserWidget);
-    browserLayout->addWidget( cefWidget->getQWidget());
+    browserLayout->addWidget( cefWidget);
     //printf("Browser widget 0x%x\n", (long int) browserWidget->logicalDpiX());
     //browserWidget->layout()->addWidget(button1);
    // w.layout()->addWidget(qw);

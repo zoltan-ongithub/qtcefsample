@@ -7,6 +7,9 @@ class QCefWebView: public QWidget
 {
 public:
     QCefWebView();
+    
+protected:
+    void resizeEvent(QResizeEvent *event);    
 };
 
 #endif /* _QCEFWEBVIEW_H_ */

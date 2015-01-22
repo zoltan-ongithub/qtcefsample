@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include "qcefwebview.h"
 #include "clienthandler.h"
+#include "clientapp.h"
 #include <thread>
 
 #include <include/cef_app.h>
@@ -16,56 +17,6 @@ using namespace cef;
 
 int g_argc;
 char **g_argv;
-
-class SimpleApp : public CefApp,
-    public CefBrowserProcessHandler
-{
-public:
-    SimpleApp(): mWidget(0) {};
-    // CefApp methods:
-    virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
-    OVERRIDE { return this; }
-    // CefBrowserProcessHandler methods:
-    virtual void OnContextInitialized() {
-
-        printf("Context initialized\n");
-
-        CefWindowInfo window_info;
-        if( mWidget != 0) {
-            CefRect r;
-            r.width = 400;
-            r.height = 400;
-            r.x = 0;
-            r.y = 0;
-            qDebug() << mWidget;
-            window_info.SetAsChild(mWidget, r);
-
-            printf("setting mWidget as child\n");
-        }
-        CefRefPtr<ClientHandler> handler(new ClientHandler());
-
-        // Specify CEF browser settings here.
-        CefBrowserSettings browser_settings;
-
-        std::string url;
-
-        CefRefPtr<CefCommandLine> command_line =
-            CefCommandLine::GetGlobalCommandLine();
-        url = command_line->GetSwitchValue("url");
-        if (url.empty())
-            url = "http://www.google.com";
-        CefBrowserHost::CreateBrowser(window_info, handler.get(), url,
-                                      browser_settings, NULL);
-    }
-    void setGtkWidget(WId w) {
-        mWidget = w;
-    }
-
-private:
-    WId mWidget;
-    // Include the default reference counting implementation.
-    IMPLEMENT_REFCOUNTING(SimpleApp);
-};
 
 int main(int argc, char *argv[])
 {
@@ -77,7 +28,7 @@ int main(int argc, char *argv[])
     CefSettings settings;
     CefMainArgs main_args(g_argc, g_argv);
 
-    CefRefPtr<SimpleApp> app(new SimpleApp());
+    CefRefPtr<ClientApp> app(new ClientApp());
 
     // CEF applications have multiple sub-processes (render, plugin, GPU, etc)
     // that share the same executable. This function checks the command-line and,

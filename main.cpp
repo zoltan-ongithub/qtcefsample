@@ -79,12 +79,6 @@ private:
     IMPLEMENT_REFCOUNTING(SimpleApp);
 };
 
-
-void browser_thread()
-{
-
-}
-
 int main(int argc, char *argv[])
 {
     g_argc = argc;

@@ -6,6 +6,7 @@
 #include <QWidget>
 #include <stdio.h>
 #include "qcefwebview.h"
+#include "clienthandler.h"
 #include <thread>
 
 #include <include/cef_app.h>
@@ -15,19 +16,6 @@ using namespace cef;
 
 int g_argc;
 char **g_argv;
-
-class SimpleHandler : public CefClient,
-    public CefDisplayHandler,
-    public CefLifeSpanHandler,
-    public CefLoadHandler
-{
-public:
-    SimpleHandler() {
-
-    }
-    ~SimpleHandler() {}
-    IMPLEMENT_REFCOUNTING(SimpleHandler);
-};
 
 class SimpleApp : public CefApp,
     public CefBrowserProcessHandler
@@ -54,7 +42,7 @@ public:
 
             printf("setting mWidget as child\n");
         }
-        CefRefPtr<SimpleHandler> handler(new SimpleHandler());
+        CefRefPtr<ClientHandler> handler(new ClientHandler());
 
         // Specify CEF browser settings here.
         CefBrowserSettings browser_settings;

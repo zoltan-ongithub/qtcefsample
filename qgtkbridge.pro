@@ -13,7 +13,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp\
-        qcefwebview.cpp
+        qcefwebview.cpp\
+        clienthandler.cpp
 
 HEADERS  += mainwindow.h
 

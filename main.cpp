@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QWidget>
 #include <stdio.h>
-#include "QtCefWidget.h"
+#include "qcefwebview.h"
 #include <thread>
 
 #include <include/cef_app.h>
@@ -109,8 +109,8 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    QtCefWidget *cefWidget = QtCefWidget::newGtkBasedWidget();
-    app->setGtkWidget(cefWidget->winId());
+    QCefWebView *webView = new QCefWebView();
+    app->setGtkWidget(webView->winId());
 
     CefString(&settings.locales_dir_path)="/home/gustavo/cef/Resources/locales";
     CefString(&settings.resources_dir_path) ="/home/gustavo/cef/Resources/";
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 
     QWidget *browserWidget = w.findChild<QWidget *>("browserWidget");
     QVBoxLayout *browserLayout = new QVBoxLayout(browserWidget);
-    browserLayout->addWidget( cefWidget);
+    browserLayout->addWidget( webView);
     //printf("Browser widget 0x%x\n", (long int) browserWidget->logicalDpiX());
     //browserWidget->layout()->addWidget(button1);
     // w.layout()->addWidget(qw);

@@ -13,7 +13,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp\
-        QtCefWidget.cpp\
+        qcefwebview.cpp
 
 HEADERS  += mainwindow.h
 

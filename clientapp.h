@@ -6,25 +6,14 @@
 #include <include/cef_app.h>
 #include "include/cef_client.h"
 
-class ClientApp : public CefApp,
-    public CefBrowserProcessHandler
+class ClientApp: public CefApp, public CefBrowserProcessHandler
 {
 public:
     ClientApp();
-    
-    // CefApp methods:
-    virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler()
-    OVERRIDE { return this; }
-    // CefBrowserProcessHandler methods:
-    virtual void OnContextInitialized();
-    
-    inline void setGtkWidget(WId w) {
-        mWidget = w;
-    }
+
+    virtual CefRefPtr<CefBrowserProcessHandler> GetBrowserProcessHandler() OVERRIDE { return this; }
 
 private:
-    WId mWidget;
-    // Include the default reference counting implementation.
     IMPLEMENT_REFCOUNTING(ClientApp);
 };
 

@@ -9,7 +9,20 @@ public:
     QCefWebView();
     
 protected:
-    void resizeEvent(QResizeEvent *event);    
+    void showEvent(QShowEvent *event);
+    void resizeEvent(QResizeEvent *event);
+    
+private:
+    enum BrowserState
+    {
+        NoneBrowserState,
+        CreatingBrowserState,
+        CreatedBrowserState
+    };
+
+    void createBrowser(const QRect &rect);
+
+    BrowserState _state;
 };
 
 #endif /* _QCEFWEBVIEW_H_ */

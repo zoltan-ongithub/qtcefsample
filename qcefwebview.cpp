@@ -5,6 +5,8 @@
 #include <include/cef_client.h>
 #include <include/cef_app.h>
 
+static CefRefPtr<ClientApp> app = nullptr;
+
 QCefWebView::QCefWebView()
 {
     _state = NoneBrowserState;
@@ -12,7 +14,9 @@ QCefWebView::QCefWebView()
     setAttribute(Qt::WA_NativeWindow);
     setAttribute(Qt::WA_DontCreateNativeAncestors);
     
-    CefRefPtr<ClientApp> app(new ClientApp());
+    if (!app) {
+        app = new ClientApp();
+    }
 }
 
 void QCefWebView::showEvent(QShowEvent *event)
